@@ -143,8 +143,13 @@ class ConfigurationClassBeanDefinitionReader {
 		for (BeanMethod beanMethod : configClass.getBeanMethods()) {
 			loadBeanDefinitionsForBeanMethod(beanMethod);
 		}
-
+		//加载@Import注解引入实现ImportSelector接口的BeanDefinitions
 		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());
+		//加载@Import注解引入实现ImportBeanDefinitionRegistrar接口的BeanDefinitions
+		//mybatis  @MapperScan注解就是通过这种方式将MapperScannerConfigurer的BeanDefinition注册进spring容器
+		//MapperScannerConfigurer本身又是一个BeanFactoryPostProcessor（BeanDefinitionRegistryPostProcessor），所以在后面
+		//refresh()方法中调用invokeBeanFactoryPostProcessors(beanFactory)时候，判断为BeanDefinitionRegistryPostProcessor
+		//类型，然后
 		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars());
 	}
 
